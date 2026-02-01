@@ -170,7 +170,7 @@ function AppContent() {
 
     // 1. Email Verification Check
     if (user && !user.emailVerified) {
-      alert("Please verify your email address before creating a tournament.");
+      alert(t.verifyEmailDesc);
       return;
     }
 
@@ -182,7 +182,7 @@ function AppContent() {
     });
 
     if (todayTournaments.length >= 5) {
-      alert("Daily tournament limit exceeded (max 5).");
+      alert(t.dailyLimit);
       return;
     }
 
@@ -285,7 +285,7 @@ function AppContent() {
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 text-gray-500">
-        Loading...
+        {t.loading}
       </div>
     );
 
@@ -295,10 +295,7 @@ function AppContent() {
         <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-500 to-brand-700 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/30">
-                A
-              </div>
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-200">
+              <h1 className="text-xl font-bold text-brand-600 dark:text-brand-400">
                 {t.appTitle}
               </h1>
             </div>
@@ -343,10 +340,7 @@ function AppContent() {
               onClick={() => setView("dashboard")}
               className="flex items-center space-x-2 cursor-pointer"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-500 to-brand-700 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/30">
-                A
-              </div>
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-200 hidden sm:block">
+              <h1 className="text-xl font-bold text-brand-600 dark:text-brand-400">
                 {t.appTitle}
               </h1>
             </div>
@@ -412,19 +406,16 @@ function AppContent() {
             <div className="flex items-center space-x-2 text-yellow-800 dark:text-yellow-200 text-sm">
               <AlertCircle size={16} />
               <span>
-                Please verify your email address to create tournaments. (
-                {user.email})
+                {t.verifyEmailDesc} ({user.email})
               </span>
             </div>
             <button
               onClick={() => {
-                resendVerification().then(() =>
-                  alert("Verification email sent!"),
-                );
+                resendVerification().then(() => alert(t.verificationSent));
               }}
               className="text-xs font-bold text-yellow-700 dark:text-yellow-300 hover:underline"
             >
-              Resend Email
+              {t.resendEmail}
             </button>
           </div>
         </div>
@@ -493,7 +484,7 @@ function AppContent() {
 
                           <div className="mb-4">
                             <div className="flex justify-between text-xs text-gray-500 mb-1">
-                              <span>Progress</span>
+                              <span>{t.progress}</span>
                               <span>{percent}%</span>
                             </div>
                             <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2">
@@ -547,7 +538,8 @@ function AppContent() {
                           </span>
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-500 mb-4">
-                          {tour.players.length} Players • {tour.settings.type}
+                          {tour.players.length} {t.players} •{" "}
+                          {tour.settings.type}
                         </div>
                         <button
                           onClick={() => openTournament(tour.id)}
@@ -565,38 +557,31 @@ function AppContent() {
             <div className="border-t border-gray-200 dark:border-slate-800 pt-8 mt-12">
               <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
                 <User size={16} />
-                Account
+                {t.account}
               </h3>
 
               <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <h4 className="font-bold text-gray-900 dark:text-white">
-                    Delete Account
+                    {t.deleteAccount}
                   </h4>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Permanently delete your account and all tournament data.
-                    This action cannot be undone.
+                    {t.deleteAccountDesc}
                   </p>
                 </div>
                 <button
                   onClick={async () => {
-                    if (
-                      window.confirm(
-                        "Are you sure you want to delete your account? This will erase ALL your data permanently.",
-                      )
-                    ) {
+                    if (window.confirm(t.deleteAccountConfirm)) {
                       try {
                         await deleteAccount();
                       } catch (e) {
-                        alert(
-                          "Failed to delete account. You may need to re-login first.",
-                        );
+                        alert(t.deleteAccountFailure);
                       }
                     }
                   }}
                   className="px-4 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-medium rounded-lg border border-red-200 dark:border-red-800 transition-colors"
                 >
-                  Delete Account
+                  {t.deleteAccount}
                 </button>
               </div>
             </div>
@@ -698,11 +683,12 @@ function AppContent() {
                   </div>
 
                   {/* Stats Row - Single Line */}
+
                   <div className="flex flex-row flex-wrap items-center justify-center sm:justify-between gap-x-8 gap-y-4 pt-4 border-t border-gray-100 dark:border-slate-700">
                     {/* Stat 1: Matches */}
                     <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
                       <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider mb-0.5">
-                        Matches
+                        {t.matches}
                       </span>
                       <div className="flex items-baseline gap-1">
                         <span className="text-lg font-bold text-gray-900 dark:text-white">
@@ -717,7 +703,7 @@ function AppContent() {
                     {/* Stat 2: Progress */}
                     <div className="flex flex-col items-center sm:items-start min-w-[100px]">
                       <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider mb-0.5">
-                        Progress
+                        {t.progress}
                       </span>
                       <div className="flex items-center gap-2">
                         <div className="flex-1 h-1.5 bg-gray-100 dark:bg-slate-700 rounded-full w-20">
@@ -735,7 +721,7 @@ function AppContent() {
                     {/* Stat 3: Leader */}
                     <div className="flex flex-col items-center sm:items-start">
                       <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider mb-0.5">
-                        Leader
+                        {t.leader}
                       </span>
                       {hasStarted && leader ? (
                         <div className="flex items-center gap-1.5">
@@ -745,7 +731,7 @@ function AppContent() {
                               {leader.playerName}
                             </span>
                             <span className="text-[10px] text-gray-500 font-medium">
-                              ({leader.points} pts)
+                              ({leader.points} {t.pts})
                             </span>
                           </div>
                         </div>
@@ -757,7 +743,7 @@ function AppContent() {
                     {/* Stat 4: Goals (Desktop Only) */}
                     <div className="hidden sm:flex flex-col items-end">
                       <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider mb-0.5">
-                        Goals
+                        {t.goals}
                       </span>
                       <span className="text-lg font-bold text-gray-900 dark:text-white">
                         {activeTournament.matches.reduce(

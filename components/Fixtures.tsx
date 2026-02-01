@@ -147,9 +147,20 @@ const Fixtures: React.FC<Props> = ({
           </div>
         )}
         <div
-          className={`font-semibold text-sm sm:text-lg leading-tight truncate w-full ${team.isGhost ? "text-gray-400 dark:text-gray-500 line-through decoration-transparent" : "text-gray-900 dark:text-gray-100"}`}
+          className={`font-semibold text-sm sm:text-lg leading-tight truncate w-full ${team.isGhost ? "text-gray-400 dark:text-gray-500" : "text-gray-900 dark:text-gray-100"}`}
         >
-          {team.playerIds.map((id) => getPlayerName(id)).join(" & ")}
+          <span
+            className={
+              team.isGhost ? "line-through decoration-transparent" : ""
+            }
+          >
+            {team.playerIds.map((id) => getPlayerName(id)).join(" & ")}
+          </span>
+          {team.isGhost && (
+            <span className="ml-1.5 text-[10px] sm:text-xs font-normal italic opacity-75 no-underline">
+              ({t.recommended})
+            </span>
+          )}
         </div>
       </div>
       <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1 truncate w-full">

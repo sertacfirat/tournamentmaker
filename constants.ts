@@ -2,7 +2,7 @@ import { Language } from './types';
 
 export const TRANSLATIONS = {
   tr: {
-    appTitle: 'ABİS Tournament Tracker',
+    appTitle: 'Tournament Tracker',
     createTournament: 'Turnuva Oluştur',
     tournamentName: 'Turnuva Adı',
     type: 'Oyun Modu',
@@ -64,10 +64,29 @@ export const TRANSLATIONS = {
     status: 'Durum',
     date: 'Tarih',
     newTournament: 'Yeni Turnuva',
-    ghostMatch: 'Bu takım için puan hesaplanmaz (Dengeleyici Maç)'
+    ghostMatch: 'Bu takım için puan hesaplanmaz (Dengeleyici Maç)',
+    recommended: 'Önerilen',
+    matches: 'Maçlar',
+    progress: 'İlerleme', // İlerleme (Progress)
+    leader: 'Lider',
+    goals: 'Goller',
+    loading: 'Yükleniyor...',
+    account: 'Hesap',
+    deleteAccount: 'Hesabı Sil',
+    deleteAccountDesc: 'Hesabınızı ve tüm turnuva verilerinizi kalıcı olarak silin. Bu işlem geri alınamaz.',
+    deleteAccountConfirm: 'Hesabınızı silmek istediğinizden emin misiniz? Bu işlem TÜM verilerinizi kalıcı olarak silecektir.',
+    deleteAccountFailure: 'Hesap silinemedi. Önce çıkış yapıp tekrar giriş yapmanız gerekebilir.',
+    verifyEmail: 'E-postanızı Doğrulayın',
+    verifyEmailDesc: 'Turnuva oluşturmak için lütfen e-posta adresinizi doğrulayın.',
+    resendEmail: 'Doğrulama E-postası Gönder',
+    verificationSent: 'Doğrulama e-postası gönderildi!',
+    dailyLimit: 'Günlük turnuva limiti aşıldı (maksimum 5).',
+    loginError: 'Kimlik doğrulama başarısız. Lütfen bilgilerinizi kontrol edin.',
+    loginLimit: 'Günlük giriş limiti aşıldı (maksimum 10).',
+    winRate: 'Kazanma Oranı'
   },
   en: {
-    appTitle: 'ABİS Tournament Tracker',
+    appTitle: 'Tournament Tracker',
     createTournament: 'Create Tournament',
     tournamentName: 'Tournament Name',
     type: 'Game Mode',
@@ -129,7 +148,26 @@ export const TRANSLATIONS = {
     status: 'Status',
     date: 'Date',
     newTournament: 'New Tournament',
-    ghostMatch: 'No points calculated for this team (Balancing Match)'
+    ghostMatch: 'No points calculated for this team (Balancing Match)',
+    recommended: 'Recommended',
+    matches: 'Matches',
+    progress: 'Progress',
+    leader: 'Leader',
+    goals: 'Goals',
+    loading: 'Loading...',
+    account: 'Account',
+    deleteAccount: 'Delete Account',
+    deleteAccountDesc: 'Permanently delete your account and all tournament data. This action cannot be undone.',
+    deleteAccountConfirm: 'Are you sure you want to delete your account? This will erase ALL your data permanently.',
+    deleteAccountFailure: 'Failed to delete account. You may need to re-login first.',
+    verifyEmail: 'Verify Email',
+    verifyEmailDesc: 'Please verify your email address to create tournaments.',
+    resendEmail: 'Resend Email',
+    verificationSent: 'Verification email sent!',
+    dailyLimit: 'Daily tournament limit exceeded (max 5).',
+    loginError: 'Authentication failed. Please check your credentials.',
+    loginLimit: 'Daily login limit exceeded (max 10).',
+    winRate: 'Win Rate'
   }
 };
 

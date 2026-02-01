@@ -87,7 +87,7 @@ const Login: React.FC<LoginProps> = ({ lang }) => {
 
         if (loginCount >= 10) {
           await auth.signOut();
-          throw new Error("Daily login limit exceeded (max 10).");
+          throw new Error(t.loginLimit);
         }
 
         // 3. Increment count
