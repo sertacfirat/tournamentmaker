@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 
 // User provided configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCuyRJ5gDLW5ITe_FiEiStzjTgZr00UocI",
-  authDomain: "torunamenttracker.firebaseapp.com",
-  projectId: "torunamenttracker",
-  storageBucket: "torunamenttracker.firebasestorage.app",
-  messagingSenderId: "211238799177",
-  appId: "1:211238799177:web:09ed7b126feed47fd77c98"
+  apiKey: "AIzaSyA6QAFUvIcdYSWy-i-zv0vsZOdFstUR94M",
+  authDomain: "tournamenttracker-app.firebaseapp.com",
+  projectId: "tournamenttracker-app",
+  storageBucket: "tournamenttracker-app.firebasestorage.app",
+  messagingSenderId: "160118226615",
+  appId: "1:160118226615:web:57ab3e524d0b3a1f255732"
 };
 
 // Initialize Firebase

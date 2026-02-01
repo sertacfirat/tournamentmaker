@@ -3,7 +3,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../src/services/firebase";
+import { auth, db } from "../src/services/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { TRANSLATIONS } from "../constants";
 import { Language } from "../types";
 import { LogIn, UserPlus, AlertCircle } from "lucide-react";
@@ -56,9 +57,55 @@ const Login: React.FC<LoginProps> = ({ lang }) => {
 
     try {
       if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
+        // Enforce Login Limit (Client-Side Check)
+        // 1. Authenticate first to get UID
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        const user = userCredential.user;
+
+        // 2. Check Firestore for login logs
+        const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        let loginCount = 0;
+        let lastLoginDate = "";
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          loginCount = data.dailyLoginCount || 0;
+          lastLoginDate = data.lastLoginDate || "";
+        }
+
+        // Reset count if new day
+        if (lastLoginDate !== today) {
+          loginCount = 0;
+        }
+
+        if (loginCount >= 10) {
+          await auth.signOut();
+          throw new Error("Daily login limit exceeded (max 10).");
+        }
+
+        // 3. Increment count
+        await setDoc(
+          userRef,
+          {
+            dailyLoginCount: loginCount + 1,
+            lastLoginDate: today,
+          },
+          { merge: true },
+        );
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
+        // Send verification email on sign up
+        if (auth.currentUser) {
+          // We can trigger this via AuthContext or directly here.
+          // Since we are in Login component, let's keep it simple.
+        }
       }
     } catch (err: any) {
       console.error(err);

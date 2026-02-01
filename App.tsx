@@ -30,12 +30,14 @@ import {
   Clock,
   LogOut,
   User,
+  AlertCircle,
 } from "lucide-react";
 
 type ViewState = "dashboard" | "create" | "details";
 
 function AppContent() {
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading, deleteAccount, resendVerification } =
+    useAuth();
 
   // Global State
   const [lang, setLang] = useState<Language>("tr");
@@ -147,6 +149,26 @@ function AppContent() {
     isDoubleRound: boolean,
     players: string[],
   ) => {
+    // SECURITY CODE:
+
+    // 1. Email Verification Check
+    if (user && !user.emailVerified) {
+      alert("Please verify your email address before creating a tournament.");
+      return;
+    }
+
+    // 2. Rate Limit Check (5 tournaments per day)
+    const today = new Date().toISOString().split("T")[0];
+    const todayTournaments = tournaments.filter((t) => {
+      const tDate = new Date(t.createdAt).toISOString().split("T")[0];
+      return tDate === today;
+    });
+
+    if (todayTournaments.length >= 5) {
+      alert("Daily tournament limit exceeded (max 5).");
+      return;
+    }
+
     const newPlayers = players.map((p) => ({
       id: Math.random().toString(36).substr(2, 9),
       name: p,
@@ -347,6 +369,50 @@ function AppContent() {
         </div>
       </header>
 
+      {/* Security Warnings */}
+      {user && !user.emailVerified && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2 text-yellow-800 dark:text-yellow-200 text-sm">
+              <AlertCircle size={16} />
+              <span>
+                Please verify your email address to create tournaments. (
+                {user.email})
+              </span>
+            </div>
+            {/* 
+                We would add a resend button here, but we need to expose it from AuthContext first 
+                or just let them do it from a profile page. For now, this is a banner.
+            */}
+          </div>
+        </div>
+      )}
+
+      {/* Security Warnings */}
+      {user && !user.emailVerified && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2 text-yellow-800 dark:text-yellow-200 text-sm">
+              <AlertCircle size={16} />
+              <span>
+                Please verify your email address to create tournaments. (
+                {user.email})
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                resendVerification().then(() =>
+                  alert("Verification email sent!"),
+                );
+              }}
+              className="text-xs font-bold text-yellow-700 dark:text-yellow-300 hover:underline"
+            >
+              Resend Email
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
         {/* VIEW: DASHBOARD */}
@@ -476,6 +542,46 @@ function AppContent() {
                     ))}
                 </div>
               )}
+            </div>
+
+            {/* Account Management */}
+            <div className="border-t border-gray-200 dark:border-slate-800 pt-8 mt-12">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                <User size={16} />
+                Account
+              </h3>
+
+              <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white">
+                    Delete Account
+                  </h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Permanently delete your account and all tournament data.
+                    This action cannot be undone.
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    if (
+                      window.confirm(
+                        "Are you sure you want to delete your account? This will erase ALL your data permanently.",
+                      )
+                    ) {
+                      try {
+                        await deleteAccount();
+                      } catch (e) {
+                        alert(
+                          "Failed to delete account. You may need to re-login first.",
+                        );
+                      }
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-medium rounded-lg border border-red-200 dark:border-red-800 transition-colors"
+                >
+                  Delete Account
+                </button>
+              </div>
             </div>
           </div>
         )}
